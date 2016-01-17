@@ -9,7 +9,7 @@ angular.module('CellularAutomata')
     $scope.step = 500;
     $scope.init = {
       cells: [{
-        i: 1,
+        i: 2,
         j: 2
       }, {
         i: 2,
