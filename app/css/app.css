@@ -4,6 +4,19 @@ body {
   padding-bottom: 20px;
 }
 
+.margin-top-25{
+  margin-top: 25px;
+}
+
+.margin-bottom-25{
+  margin-bottom: 25px;
+}
+
+.menu a{
+  margin-left: 5px;
+  margin-bottom: 20px;
+}
+
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .footer {

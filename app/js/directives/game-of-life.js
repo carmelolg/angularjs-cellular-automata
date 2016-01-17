@@ -2,10 +2,14 @@
 
 var width = 0;
 var height = 0;
+var cellsize = 0;
 var init = {};
 var matrix = [
   []
 ];
+var canvas;
+var computationOnAir = false;
+var interval = undefined;
 
 function _create2DMatrix(matrix, width, height) {
   for (var i = 0; i < width; i++) {
@@ -17,9 +21,10 @@ function _create2DMatrix(matrix, width, height) {
 }
 
 function _init() {
-  init.cells.forEach(function(value, index) {
-    matrix[value.i][value.j] = 1;
-  });
+  for (var i = 0; i < init.cells.length; i++) {
+    var object = init.cells[i];
+    matrix[object.i][object.j] = 1;
+  }
 }
 
 function _isInsideAndAlive(i, j) {
@@ -34,7 +39,14 @@ function _isInsideAndAlive(i, j) {
  * ---------
  */
 function _getNumberOfNeighbors_VonNeumann(i, j) {
+  var neighbors = 0;
 
+  if (_isInsideAndAlive(i - 1, j)) neighbors++;
+  if (_isInsideAndAlive(i, j - 1)) neighbors++;
+  if (_isInsideAndAlive(i, j + 1)) neighbors++;
+  if (_isInsideAndAlive(i + 1, j)) neighbors++;
+
+  return neighbors;
 }
 
 
@@ -61,33 +73,85 @@ function _getNumberOfNeighbors_Moore(i, j) {
 }
 
 function _transitionFn() {
+  computationOnAir = true;
+  var temp = [];
+  for (var i = 0; i < width; i++) {
+    temp[i] = [];
+    for (var j = 0; j < height; j++) {
+      var alive = 0,
+        n = _getNumberOfNeighbors_Moore(i, j);
+      if (matrix[i][j]) {
+        alive = (n == 2 || n == 3) ? 1 : 0;
+      } else {
+        alive = (n == 3) ? 1 : 0;
+      }
+      temp[i][j] = alive;
+    }
+  }
+  matrix = temp;
+  computationOnAir = false;
+}
+
+function _draw() {
+  canvas.clearRect(0, 0, width, height);
   for (var i = 0; i < width; i++) {
     for (var j = 0; j < height; j++) {
-      alive = (_getNumberOfNeighbors_Moore(i,j) < 2 && matrix[i][j] ) ? 1 : 0;
+      canvas.beginPath();
+      canvas.rect(i * cellsize, j * cellsize, cellsize, cellsize);
+      if (matrix[i][j]) {
+        canvas.fill();
+      } else {
+        canvas.stroke();
+      }
     }
   }
 }
 
+
 angular.module('CellularAutomata')
-  .directive('gol', ['$interval', function($interval) {
+  .directive('gol', ['$interval', 'Const', function($interval, Const) {
     return {
-      restrict: 'E',
+      restrict: 'A',
       scope: {
         width: '=',
         height: '=',
-        init: '='
+        init: '=',
+        cellsize: '=',
+        start: '=',
+        step: '='
       },
       templateUrl: 'views/gol.html',
       link: function(scope, element) {
+
         width = scope.width;
         height = scope.height;
         init = scope.init;
-        _create2DMatrix(matrix, width, height);
-        _init();
-        $interval(function() {
-          _transitionFn();
-        }, 250);
-        // getNumberOfNeighbors_Moore(0,0);
+        cellsize = scope.cellsize;
+
+        canvas = element[0].getContext('2d');
+        canvas.strokeStyle = Const.strokeColor;
+        canvas.fillStyle = Const.fillColor;
+
+        scope.$watch(function() {
+          return scope.start;
+        }, function(start) {
+          console.log(scope.step);
+          if (start) {
+            _create2DMatrix(matrix, width, height);
+            _init();
+            interval = $interval(function() {
+              _transitionFn();
+              _draw();
+            }, scope.step);
+
+          }else{
+            if(interval){
+              $interval.cancel(interval);
+            }
+            _create2DMatrix(matrix, width, height);
+            _init();
+          }
+        });
       }
     };
   }]);

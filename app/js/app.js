@@ -10,6 +10,14 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: 'views/home.html',
     controller: 'HomeCtrl'
   });
+  $routeProvider.when('/ant', {
+    // templateUrl: 'views/home.html',
+    // controller: 'HomeCtrl'
+  });
+  $routeProvider.when('/eruption', {
+    // templateUrl: 'views/home.html',
+    // controller: 'HomeCtrl'
+  });
   $routeProvider.otherwise({
     redirectTo: '/home'
   });
