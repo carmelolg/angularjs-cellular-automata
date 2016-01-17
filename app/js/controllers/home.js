@@ -10,13 +10,20 @@ angular.module('CellularAutomata')
     $scope.init = {
       cells: [{
         i: 1,
-        j: 1
-      }, {
-        i: 1,
         j: 2
       }, {
-        i: 1,
-        j: 3
+        i: 2,
+        j: 2
+      }, {
+        i: 3,
+        j: 2
+      }, {
+        i: 3,
+        j: 1
+      }, {
+        i: 2,
+        j: 0
       }]
+
     };
   }]);
