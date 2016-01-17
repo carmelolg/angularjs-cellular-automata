@@ -135,7 +135,6 @@ angular.module('CellularAutomata')
         scope.$watch(function() {
           return scope.start;
         }, function(start) {
-          console.log(scope.step);
           if (start) {
             _create2DMatrix(matrix, width, height);
             _init();
