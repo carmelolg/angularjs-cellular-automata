@@ -4,9 +4,9 @@ An AngularJS application for Cellular Automata
 
 ## Cellular Automata implemented
 
-[x] - Game of life
-[] - Ant behavior
-[] - Eruption simulation
+- Game of life
+- Ant behavior
+- Eruption simulation
 
 
 ## Demo
